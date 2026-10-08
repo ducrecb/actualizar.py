@@ -1,0 +1,27 @@
+import requests
+
+# Tus fuentes de m3u4u
+urls = [
+    "http://m3u4u.com/m3u/69wkng165jcxd69jnq8g",
+    "http://m3u4u.com/m3u/26p5n36mrzu9jzqryv7j"
+]
+
+contenido_final = "#EXTM3U\n"
+
+for url in urls:
+    try:
+        response = requests.get(url, timeout=15)
+        if response.status_code == 200:
+            lineas = response.text.splitlines()
+            for linea in lineas:
+                # Evitamos repetir la cabecera #EXTM3U en medio del archivo
+                if not linea.startswith("#EXTM3U") and linea.strip():
+                    contenido_final += linea + "\n"
+    except Exception as e:
+        print(f"Error descargando {url}: {e}")
+
+# Guarda todo en un nuevo archivo unificado
+with open("lista_fusionada.m3u", "w", encoding="utf-8") as f:
+    f.write(contenido_final)
+
+print("¡Listas de Paraguay e Internacional fusionadas con éxito!")
